@@ -1,0 +1,226 @@
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f0f4f8;
+  color: #1e293b;
+  min-height: 100vh;
+}
+
+.wrapper { max-width: 960px; margin: 0 auto; padding: 0 16px 40px; width: 100%; }
+
+/* ===== HEADER ===== */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0 14px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.logo-area { display: flex; align-items: center; gap: 12px; }
+
+.logo-box {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: #fff;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 800;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+}
+
+.logo-area h1 { font-size: 20px; font-weight: 800; color: #1d4ed8; letter-spacing: 1px; }
+.logo-area p  { font-size: 12px; color: #64748b; }
+
+nav { display: flex; gap: 8px; }
+.nav-link {
+  padding: 7px 16px; border-radius: 8px;
+  font-size: 13px; font-weight: 600;
+  text-decoration: none; color: #475569;
+  border: 1.5px solid #e2e8f0;
+  transition: all .2s;
+}
+.nav-link:hover, .nav-link.active {
+  background: #1d4ed8; color: #fff; border-color: #1d4ed8;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+}
+
+.title-card {
+  display: flex; align-items: center; gap: 16px;
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #fff; padding: 22px 28px;
+}
+.title-card h2 { font-size: 19px; font-weight: 700; }
+.title-card p  { font-size: 13px; opacity: .85; margin-top: 4px; }
+.title-icon { font-size: 36px; }
+
+/* ===== SECTION HEADERS ===== */
+.section-card { padding: 0; overflow: hidden; }
+.section-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 24px;
+  border-radius: 0;
+}
+.section-header h3 { font-size: 15px; font-weight: 700; }
+.section-icon { font-size: 18px; }
+.section-header.blue   { background: #eff6ff; color: #1d4ed8; border-left: 4px solid #1d4ed8; }
+.section-header.green  { background: #f0fdf4; color: #16a34a; border-left: 4px solid #16a34a; }
+.section-header.orange { background: #fff7ed; color: #ea580c; border-left: 4px solid #ea580c; }
+.section-header.purple { background: #faf5ff; color: #7c3aed; border-left: 4px solid #7c3aed; }
+
+/* ===== FORM GRID ===== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+  padding: 20px 24px 24px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+
+label {
+  font-size: 13px; font-weight: 600; color: #374151;
+}
+
+input, select, textarea {
+  padding: 10px 13px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px; color: #1e293b;
+  background: #f9fafb;
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+  width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+  background: #fff;
+}
+
+input::placeholder { color: #9ca3af; }
+
+.required-star { color: #dc2626; margin-left: 2px; }
+
+/* ===== SUBMIT AREA ===== */
+.submit-area {
+  display: flex; gap: 14px; justify-content: flex-end;
+  padding: 0 0 4px;
+  flex-wrap: wrap;
+}
+
+.btn-submit, .btn-reset {
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; border: none;
+  display: flex; align-items: center; gap: 8px;
+  transition: all .2s;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(37,99,235,.3);
+}
+.btn-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,99,235,.4); }
+.btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+.btn-reset {
+  background: #f1f5f9; color: #475569;
+  border: 1.5px solid #e2e8f0;
+}
+.btn-reset:hover { background: #e2e8f0; }
+
+/* ===== NOTIFICATION ===== */
+.notification {
+  padding: 14px 18px; border-radius: 10px; margin-bottom: 20px;
+  font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; gap: 10px;
+}
+.notification.hidden { display: none; }
+.notification.success { background: #f0fdf4; color: #16a34a; border: 1.5px solid #bbf7d0; }
+.notification.error   { background: #fef2f2; color: #dc2626; border: 1.5px solid #fecaca; }
+
+/* ===== DATA TABLE ===== */
+.data-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+  min-width: 900px;
+}
+.data-table th {
+  background: #1d4ed8; color: #fff;
+  padding: 11px 14px; text-align: left;
+  font-size: 12px; font-weight: 700;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+.data-table tr:nth-child(even) td { background: #f8fafc; }
+.data-table tr:hover td { background: #eff6ff; }
+
+.empty-state { text-align: center; padding: 48px; color: #94a3b8; font-size: 16px; }
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center; padding: 20px 0 0;
+  font-size: 12px; color: #94a3b8;
+  border-top: 1px solid #e2e8f0; margin-top: 8px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.full { grid-column: 1; }
+  .submit-area { flex-direction: column; }
+  .btn-submit, .btn-reset { width: 100%; justify-content: center; }
+}
+.section-card,
+.title-card,
+.card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+input, select, textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-cari {
+  padding: 10px 18px;
+  background: #0f766e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s;
+}
+.btn-cari:hover { background: #0d9488; }
+.btn-cari:disabled { opacity: .6; cursor: not-allowed; }
+
+.section-locked { opacity: 1; pointer-events: all; }
+.section-unlocked { opacity: 1; pointer-events: all; transition: opacity .3s; }

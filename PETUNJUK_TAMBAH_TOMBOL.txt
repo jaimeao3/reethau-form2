@@ -1,0 +1,5 @@
+Tambahkan tombol ini di bagian <nav> pada form.html,
+setelah baris: <a href="..." class="nav-link">Lihat Data ↗</a>
+
+Tambahkan:
+<a href="/admin/login" class="nav-link" style="background:#1e293b; color:#93c5fd; border-color:#2563eb;">🔐 Admin</a>

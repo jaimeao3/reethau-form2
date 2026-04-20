@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard – Reethau</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #273349;
+      --border: rgba(255,255,255,0.07);
+      --blue: #2563eb;
+      --blue-light: #3b82f6;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --purple: #8b5cf6;
+      --text: #f1f5f9;
+      --text-muted: #64748b;
+      --text-sub: #94a3b8;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      position: fixed;
+      height: 100vh;
+      top: 0; left: 0;
+    }
+
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 8px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .logo-box {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 900; color: #fff;
+    }
+
+    .sidebar-logo h1 { font-size: 16px; font-weight: 800; color: #fff; }
+    .sidebar-logo p  { font-size: 10px; color: var(--text-muted); }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 9px;
+      font-size: 13px; font-weight: 600; color: var(--text-sub);
+      text-decoration: none; margin-bottom: 4px;
+      transition: all .2s;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: rgba(37,99,235,0.15); color: #93c5fd; }
+    .nav-item span { font-size: 16px; }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      margin-left: 240px;
+      flex: 1;
+      padding: 28px 32px;
+    }
+
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .page-header h2 { font-size: 22px; font-weight: 800; }
+    .page-header p  { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .badge-blue   { background: rgba(37,99,235,0.15);  color: #93c5fd;  border: 1px solid rgba(37,99,235,0.3); }
+    .badge-green  { background: rgba(16,185,129,0.15); color: #6ee7b7;  border: 1px solid rgba(16,185,129,0.3); }
+    .badge-yellow { background: rgba(245,158,11,0.15); color: #fcd34d;  border: 1px solid rgba(245,158,11,0.3); }
+    .badge-red    { background: rgba(239,68,68,0.15);  color: #fca5a5;  border: 1px solid rgba(239,68,68,0.3); }
+
+    /* ===== STAT CARDS ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .stat-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 32px; font-weight: 800; margin: 8px 0 4px; }
+    .stat-sub   { font-size: 12px; color: var(--text-muted); }
+    .stat-blue   { border-top: 3px solid var(--blue); }
+    .stat-green  { border-top: 3px solid var(--green); }
+    .stat-yellow { border-top: 3px solid var(--yellow); }
+    .stat-purple { border-top: 3px solid var(--purple); }
+
+    /* ===== ID REQUEST CARDS ===== */
+    .section-title {
+      font-size: 15px; font-weight: 800;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text);
+    }
+
+    .id-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .id-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .id-card:hover { border-color: rgba(37,99,235,0.4); }
+
+    .id-card-header {
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .id-number {
+      font-size: 18px; font-weight: 800; color: #93c5fd;
+    }
+    .id-posisi { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .id-card-body {
+  padding: 16px 20px;
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #2563eb #1e293b;
+}
+
+.id-card-body::-webkit-scrollbar {
+  width: 5px;
+}
+.id-card-body::-webkit-scrollbar-track {
+  background: #1e293b;
+  border-radius: 10px;
+}
+.id-card-body::-webkit-scrollbar-thumb {
+  background: #2563eb;
+  border-radius: 10px;
+}
+.id-card-body::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+
+    .cv-entry {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cv-entry:last-child { border-bottom: none; }
+
+    .cv-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--blue-light);
+      margin-top: 5px; flex-shrink: 0;
+    }
+
+    .cv-nama  { font-size: 13px; font-weight: 700; color: var(--text); }
+    .cv-info  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .cv-tanggal { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
+
+    .id-card-footer {
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.02);
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .cv-count {
+      font-size: 12px; color: var(--text-muted);
+    }
+    .cv-count strong { color: var(--text); font-weight: 700; }
+
+    /* ===== FULL TABLE ===== */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .table-header h3 { font-size: 14px; font-weight: 700; }
+
+    .btn-refresh {
+      padding: 7px 14px;
+      background: rgba(37,99,235,0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(37,99,235,0.3);
+      border-radius: 8px;
+      font-size: 12px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: all .2s;
+    }
+    .btn-refresh:hover { background: rgba(37,99,235,0.25); }
+
+    .table-scroll { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 900px;
+    }
+
+    thead th {
+      background: rgba(255,255,255,0.04);
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-sub);
+      white-space: nowrap;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(255,255,255,0.02); color: var(--text); }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 20px;
+      font-size: 10px; font-weight: 700;
+    }
+
+    .empty-state {
+      text-align: center; padding: 60px;
+      color: var(--text-muted); font-size: 14px;
+    }
+
+    .error-banner {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: #fca5a5;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-box">R</div>
+      <div>
+        <h1>REETHAU</h1>
+        <p>Admin Panel</p>
+      </div>
+    </div>
+
+    <a href="/admin/dashboard" class="nav-item active">
+      <span>📊</span> Dashboard
+    </a>
+    <a href="/" class="nav-item">
+      <span>📋</span> Form Input
+    </a>
+    <a href="https://docs.google.com/spreadsheets/d/1M76I4Ryik_oRX81hyjI_7mpWhwUfGYq-rIscEqJ_YwI/edit" target="_blank" class="nav-item">
+      <span>📄</span> Spreadsheet ↗
+    </a>
+
+    <div class="sidebar-bottom">
+      <a href="/admin/logout" class="nav-item">
+        <span>🚪</span> Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h2>📊 Dashboard Admin</h2>
+        <p>Rekap data CV per ID Request dari sheet "ID Request"</p>
+      </div>
+      <span class="badge badge-blue">🔐 Administrator</span>
+    </div>
+
+    {% if error %}
+    <div class="error-banner">⚠️ {{ error }}</div>
+    {% endif %}
+
+    <!-- Stat Cards -->
+    <div class="stats-grid">
+      <div class="stat-card stat-blue">
+        <div class="stat-label">Total ID Request</div>
+        <div class="stat-value" style="color:#93c5fd;">{{ summary | length }}</div>
+        <div class="stat-sub">ID unik tercatat</div>
+      </div>
+      <div class="stat-card stat-green">
+        <div class="stat-label">Total CV Masuk</div>
+        <div class="stat-value" style="color:#6ee7b7;">{{ rows | length }}</div>
+        <div class="stat-sub">Semua submission</div>
+      </div>
+      <div class="stat-card stat-yellow">
+        <div class="stat-label">On Process</div>
+        <div class="stat-value" style="color:#fcd34d;">
+          {{ rows | selectattr('2', 'ne', '') | list | length if rows else 0 }}
+        </div>
+        <div class="stat-sub">CV sedang diproses</div>
+      </div>
+      <div class="stat-card stat-purple">
+        <div class="stat-label">Total Data</div>
+        <div class="stat-value" style="color:#c4b5fd;">{{ rows | length }}</div>
+        <div class="stat-sub">Baris di spreadsheet</div>
+      </div>
+    </div>
+
+    <!-- Per ID Request Cards -->
+    {% if summary %}
+    <div class="section-title">🗂️ Rekap CV per ID Request</div>
+    <div class="id-grid">
+      {% for id_req, info in summary.items() %}
+      <div class="id-card">
+        <div class="id-card-header">
+          <div>
+            <div class="id-number">ID # {{ id_req }}</div>
+            <div class="id-posisi">{{ info.posisi }} — {{ info.penempatan }}</div>
+          </div>
+          <span class="badge badge-yellow">On Process</span>
+        </div>
+        <div class="id-card-body">
+          {% for entry in info.entries %}
+          <div class="cv-entry">
+            <div class="cv-dot"></div>
+            <div>
+              <div class="cv-nama">{{ entry.nama or '(Nama tidak tersedia)' }}</div>
+              <div class="cv-info">Posisi: {{ entry.posisi or '-' }}</div>
+              <div class="cv-tanggal">📅 {{ entry.timestamp or '-' }}</div>
+              {% if entry.cv_process %}
+              <div class="cv-tanggal" style="color:#6ee7b7;">✅ CV diproses: {{ entry.cv_process }}</div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="id-card-footer">
+          <span class="cv-count">Total CV: <strong>{{ info.total_cv }}</strong></span>
+          <span class="badge badge-green">{{ info.total_cv }} submission</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Full Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <h3>📋 Semua Data — Sheet "ID Request"</h3>
+        <button class="btn-refresh" onclick="location.reload()">🔄 Refresh</button>
+      </div>
+      {% if rows %}
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              {% for h in headers %}
+              <th>{{ h }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr>
+              <td style="color:#475569;">{{ loop.index }}</td>
+              {% for cell in row %}
+              <td>
+                {% if cell == 'On Process' or cell == 'on process' %}
+                  <span class="status-pill badge-yellow">⏳ {{ cell }}</span>
+                {% elif cell == 'Fulfilled' %}
+                  <span class="status-pill badge-green">✅ {{ cell }}</span>
+                {% elif cell == 'Cancelled' %}
+                  <span class="status-pill badge-red">❌ {{ cell }}</span>
+                {% else %}
+                  {{ cell }}
+                {% endif %}
+              </td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        📭 Belum ada data di sheet "ID Request"
+      </div>
+      {% endif %}
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

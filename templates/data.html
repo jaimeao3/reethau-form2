@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Data Pelamar – Reethau</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrapper">
+    <header class="page-header">
+      <div class="logo-area">
+        <div class="logo-box">R</div>
+        <div>
+          <h1>REETHAU</h1>
+          <p>Human Resources Information System</p>
+        </div>
+      </div>
+      <nav>
+        <a href="/" class="nav-link">Form Input</a>
+        <a href="/data" class="nav-link active">Lihat Data</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="card title-card">
+        <div class="title-icon">📊</div>
+        <div>
+          <h2>Data Hasil Input</h2>
+          <p>Data yang tersimpan di Google Spreadsheet – Sheet "Hasil Input"</p>
+        </div>
+      </div>
+
+      {% if error %}
+      <div class="notification error">
+        ⚠️ Gagal memuat data: {{ error }}
+        <br><small>Pastikan credentials.json dan SPREADSHEET_ID sudah dikonfigurasi dengan benar.</small>
+      </div>
+      {% endif %}
+
+      {% if rows %}
+      <div class="card" style="overflow-x:auto; padding: 0;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              {% for h in headers %}
+              <th>{{ h }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr>
+              {% for cell in row %}
+              <td>{{ cell }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% elif not error %}
+      <div class="card empty-state">
+        <p>📭 Belum ada data tersimpan.</p>
+        <a href="/" class="btn-submit" style="display:inline-block;margin-top:12px;text-decoration:none;">+ Input Data Baru</a>
+      </div>
+      {% endif %}
+    </main>
+
+    <footer>
+      <p>© 2026 Reethau HRIS · Data tersimpan otomatis ke Google Spreadsheet</p>
+    </footer>
+  </div>
+</body>
+</html>

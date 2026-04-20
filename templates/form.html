@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Form Permintaan Tenaga Kerja – Reethau</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="logo-area">
+        <div class="logo-box">R</div>
+        <div>
+          <h1>REETHAU</h1>
+          <p>Human Resources Information System</p>
+        </div>
+      </div>
+      <nav>
+        <a href="/" class="nav-link active">Form Input</a>
+        <a href="https://docs.google.com/spreadsheets/d/1M76I4Ryik_oRX81hyjI_7mpWhwUfGYq-rIscEqJ_YwI/edit?hl=id&pli=1&gid=0#gid=0" target="_blank" class="nav-link">Lihat Data ↗</a>
+        <a href="/admin/login" class="nav-link" style="background:#1e293b; color:#93c5fd; border-color:#2563eb;">🔐 Admin</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Title Card -->
+      <div class="card title-card">
+        <div class="title-icon">📋</div>
+        <div>
+          <h2>Form Permintaan Tenaga Kerja</h2>
+          <p>Isi formulir di bawah ini. Field bertanda <span class="required-star">★</span> wajib diisi.</p>
+        </div>
+      </div>
+
+      <!-- Notification -->
+      <div id="notification" class="notification hidden"></div>
+
+      <form id="mainForm" autocomplete="off">
+
+        <!-- SECTION A: Data Pelamar -->
+        <div class="card section-card">
+          <div class="section-header blue">
+            <span class="section-icon">👤</span>
+            <h3>A. Data Pelamar</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Nama Pelamar <span class="required-star">★</span></label>
+              <input type="text" name="nama_pelamar" placeholder="Nama lengkap pelamar" required />
+            </div>
+            <div class="form-group">
+              <label>No. Telepon / WhatsApp <span class="required-star">★</span></label>
+              <input type="text" name="no_tlp" placeholder="Contoh: 6281234567890" required />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" name="email" placeholder="email@contoh.com" />
+            </div>
+            <div class="form-group">
+              <label>ID Request <span class="required-star">★</span></label>
+              <div style="display:flex; gap:8px;">
+                <select name="id_request" id="id_request_select" style="flex:1;">
+                  <option value="">-- Pilih ID Request --</option>
+                </select>
+                <button type="button" id="btnCari" onclick="cariData()" class="btn-cari">🔍 Cari</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION B: Posisi & Penempatan -->
+        <div class="card section-card">
+          <div class="section-header green">
+            <span class="section-icon">💼</span>
+            <h3>B. Posisi & Penempatan</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Posisi Lamaran <span class="required-star">★</span></label>
+              <input type="text" name="posisi_lamaran" placeholder="Contoh: Inventory Staff" required />
+            </div>
+            <div class="form-group">
+              <label>FPK Name</label>
+              <input type="text" name="fpk_name" placeholder="Nama FPK" />
+            </div>
+            <div class="form-group">
+              <label>Penempatan <span class="required-star">★</span></label>
+              <select name="penempatan" required>
+                <option value="">-- Pilih Lokasi --</option>
+                <option>Sangkulirang</option>
+                <option>Jawa Tengah</option>
+                <option>Jakarta</option>
+                <option>Surabaya</option>
+                <option>Balikpapan</option>
+                <option>Makassar</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Grade <span class="required-star">★</span></label>
+              <select name="grade" required>
+                <option value="">-- Pilih Grade --</option>
+                <option>1</option><option>2</option><option>3</option>
+                <option>4</option><option>5</option><option>6</option>
+                <option>7</option><option>8</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Induk Perusahaan <span class="required-star">★</span></label>
+              <select name="induk_perusahaan" required>
+                <option value="">-- Pilih Perusahaan --</option>
+                <option>Reethau</option>
+                <option>PT Induk Lainnya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Divisi</label>
+              <input type="text" name="divisi" placeholder="Contoh: RET" />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION C: Detail FPK -->
+        <div class="card section-card">
+          <div class="section-header orange">
+            <span class="section-icon">📁</span>
+            <h3>C. Detail FPK & Budget</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Budget / Non Budget</label>
+              <select name="budget_status">
+                <option value="Non Budget">Non Budget</option>
+                <option value="Budget">Budget</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select name="category">
+                <option value="">-- Pilih --</option>
+                <option>Additional</option>
+                <option>Replacement</option>
+                <option>New Headcount</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Detail Category</label>
+              <input type="text" name="detail_category" placeholder="Isi jika ada detail kategori" />
+            </div>
+            <div class="form-group">
+              <label>Vacancy Request</label>
+              <input type="number" name="vacancy_request" value="1" min="1" />
+            </div>
+            <div class="form-group">
+              <label>Form FPK</label>
+              <select name="form_fpk">
+                <option value="NO">NO</option>
+                <option value="YES">YES</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Link Form (jika ada)</label>
+              <input type="url" name="link_form" placeholder="https://forms.gle/..." />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION D: Tanggal -->
+        <div class="card section-card">
+          <div class="section-header purple">
+            <span class="section-icon">📅</span>
+            <h3>D. Tanggal & Status</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Tanggal Request PTK</label>
+              <input type="date" name="tgl_request_ptk" />
+            </div>
+            <div class="form-group">
+              <label>Tanggal Approve BOD</label>
+              <input type="date" name="tgl_approve_bod" />
+            </div>
+            <div class="form-group">
+              <label>Joined</label>
+              <input type="text" name="joined" placeholder="0" />
+            </div>
+            <div class="form-group">
+              <label>CV Process</label>
+              <input type="text" name="cv_process" placeholder="0" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-area">
+          <button type="submit" id="submitBtn" class="btn-submit">
+            <span class="btn-icon">💾</span> Simpan ke Google Spreadsheet
+          </button>
+          <button type="reset" class="btn-reset">
+            <span class="btn-icon">🔄</span> Reset Form
+          </button>
+        </div>
+      </form>
+    </main>
+
+    <footer>
+      <p>© 2024 Reethau HRIS · Data tersimpan otomatis ke Google Spreadsheet</p>
+    </footer>
+  </div>
+</body>
+</html>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    function isiDropdown() {
+      var select = document.getElementById('id_request_select');
+      if (!select) return;
+      fetch('/get-all-ids')
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          if (result.ids && result.ids.length > 0) {
+            while (select.options.length > 1) select.remove(1);
+            result.ids.forEach(function(id) {
+              var opt = document.createElement('option');
+              opt.value = id;
+              opt.text = id;
+              select.appendChild(opt);
+            });
+          }
+        })
+        .catch(function(e) { console.log('Gagal load IDs:', e); });
+    }
+    setTimeout(isiDropdown, 200);
+    setTimeout(isiDropdown, 800);
+    setTimeout(isiDropdown, 2000);
+  </script>
+</body>
+</html>

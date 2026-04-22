@@ -17,7 +17,6 @@
       --blue-light: #3b82f6;
       --green: #10b981;
       --yellow: #f59e0b;
-      --red: #ef4444;
       --purple: #8b5cf6;
       --text: #f1f5f9;
       --text-muted: #64748b;
@@ -35,147 +34,125 @@
 
     /* ===== SIDEBAR ===== */
     .sidebar {
-      width: 220px;
+      width: 200px;
       background: var(--surface);
       border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      padding: 20px 14px;
-      position: fixed;
-      height: 100vh;
-      top: 0; left: 0;
+      display: flex; flex-direction: column;
+      padding: 18px 12px;
+      position: fixed; height: 100vh; top: 0; left: 0;
     }
-
     .sidebar-logo {
-      display: flex; align-items: center; gap: 10px;
-      padding: 0 8px 20px;
+      display: flex; align-items: center; gap: 9px;
+      padding: 0 6px 18px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
-
     .logo-box {
-      width: 34px; height: 34px;
+      width: 32px; height: 32px;
       background: linear-gradient(135deg, #2563eb, #1d4ed8);
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px; font-weight: 900; color: #fff;
+      font-size: 14px; font-weight: 900; color: #fff;
     }
-
-    .sidebar-logo h1 { font-size: 15px; font-weight: 800; color: #fff; }
+    .sidebar-logo h1 { font-size: 14px; font-weight: 800; color: #fff; }
     .sidebar-logo p  { font-size: 10px; color: var(--text-muted); }
 
     .nav-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 12px; border-radius: 8px;
-      font-size: 13px; font-weight: 600; color: var(--text-sub);
-      text-decoration: none; margin-bottom: 3px;
-      transition: all .2s;
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 10px; border-radius: 7px;
+      font-size: 12px; font-weight: 600; color: var(--text-sub);
+      text-decoration: none; margin-bottom: 2px; transition: all .2s;
     }
     .nav-item:hover { background: var(--surface2); color: var(--text); }
     .nav-item.active { background: rgba(37,99,235,0.15); color: #93c5fd; }
-    .nav-item span { font-size: 15px; }
-
-    .sidebar-bottom {
-      margin-top: auto;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
+    .nav-item span { font-size: 14px; }
+    .sidebar-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
 
     /* ===== MAIN ===== */
-    .main { margin-left: 220px; flex: 1; padding: 24px 28px; }
+    .main { margin-left: 200px; flex: 1; padding: 20px 24px; }
 
     .page-header {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
-    .page-header h2 { font-size: 20px; font-weight: 800; }
-    .page-header p  { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+    .page-header h2 { font-size: 18px; font-weight: 800; }
+    .page-header p  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
     .badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 4px 10px; border-radius: 20px;
-      font-size: 11px; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 9px; border-radius: 20px;
+      font-size: 10px; font-weight: 700;
     }
     .badge-blue   { background: rgba(37,99,235,0.15);  color: #93c5fd;  border: 1px solid rgba(37,99,235,0.3); }
     .badge-green  { background: rgba(16,185,129,0.15); color: #6ee7b7;  border: 1px solid rgba(16,185,129,0.3); }
     .badge-yellow { background: rgba(245,158,11,0.15); color: #fcd34d;  border: 1px solid rgba(245,158,11,0.3); }
 
-    /* ===== STAT GRID 2x2 ===== */
+    /* ===== STAT GRID 2x2 COMPACT ===== */
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 24px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
-
     .stat-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px 20px;
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px;
     }
-    .stat-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-value { font-size: 28px; font-weight: 800; margin: 6px 0 3px; }
-    .stat-sub   { font-size: 11px; color: var(--text-muted); }
-    .stat-blue   { border-top: 3px solid var(--blue); }
-    .stat-green  { border-top: 3px solid var(--green); }
-    .stat-yellow { border-top: 3px solid var(--yellow); }
-    .stat-purple { border-top: 3px solid var(--purple); }
+    .stat-icon { font-size: 22px; }
+    .stat-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+    .stat-value { font-size: 20px; font-weight: 800; margin: 2px 0 0; }
+    .stat-blue   { border-left: 3px solid var(--blue); }
+    .stat-green  { border-left: 3px solid var(--green); }
+    .stat-yellow { border-left: 3px solid var(--yellow); }
+    .stat-purple { border-left: 3px solid var(--purple); }
 
     /* ===== ID CARDS ===== */
     .section-title {
-      font-size: 14px; font-weight: 800;
-      margin-bottom: 14px;
-      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 800;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
     }
-
     .id-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 14px;
-      margin-bottom: 28px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
     }
-
     .id-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
+      border-radius: 10px; overflow: hidden;
       transition: border-color .2s;
     }
     .id-card:hover { border-color: rgba(37,99,235,0.4); }
-
     .id-card-header {
-      padding: 14px 18px 12px;
+      padding: 12px 16px 10px;
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
     }
-    .id-number { font-size: 16px; font-weight: 800; color: #93c5fd; }
-    .id-posisi { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
+    .id-number { font-size: 15px; font-weight: 800; color: #93c5fd; }
+    .id-posisi { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
     .id-card-body {
-      padding: 14px 18px;
-      max-height: 220px;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #2563eb #1e293b;
+      padding: 10px 16px;
+      max-height: 180px; overflow-y: auto;
+      scrollbar-width: thin; scrollbar-color: #2563eb #1e293b;
     }
     .id-card-body::-webkit-scrollbar { width: 4px; }
-    .id-card-body::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
-    .id-card-body::-webkit-scrollbar-thumb { background: #2563eb; border-radius: 10px; }
-
+    .id-card-body::-webkit-scrollbar-track { background: #1e293b; }
+    .id-card-body::-webkit-scrollbar-thumb { background: #2563eb; border-radius: 4px; }
     .cv-entry {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 7px 0; border-bottom: 1px solid var(--border);
     }
     .cv-entry:last-child { border-bottom: none; }
-    .cv-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue-light); margin-top: 5px; flex-shrink: 0; }
-    .cv-nama  { font-size: 12px; font-weight: 700; color: var(--text); }
-    .cv-info  { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-
+    .cv-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-light); margin-top: 5px; flex-shrink: 0; }
+    .cv-nama { font-size: 12px; font-weight: 700; color: var(--text); }
+    .cv-info { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
     .id-card-footer {
-      padding: 10px 18px;
+      padding: 8px 16px;
       background: rgba(255,255,255,0.02);
       border-top: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
@@ -187,109 +164,123 @@
     .table-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
+      border-radius: 10px; overflow: hidden;
     }
 
     .table-header {
-      padding: 16px 20px;
+      padding: 12px 16px;
       border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: nowrap;
     }
-    .table-header h3 { font-size: 13px; font-weight: 700; }
-
-    /* ===== SEARCH BOX ===== */
-    .search-area {
-      display: flex; align-items: center; gap: 10px; flex: 1;
-      max-width: 420px;
-    }
+    .table-header h3 { font-size: 12px; font-weight: 700; white-space: nowrap; margin-right: auto; }
 
     .search-input {
-      flex: 1;
-      padding: 8px 14px;
+      padding: 6px 12px;
       background: rgba(255,255,255,0.06);
       border: 1.5px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      font-size: 13px;
-      color: var(--text);
-      font-family: inherit;
-      outline: none;
+      border-radius: 7px;
+      font-size: 12px; color: var(--text);
+      font-family: inherit; outline: none;
       transition: border-color .2s;
+      width: 200px;
     }
     .search-input:focus { border-color: #2563eb; }
     .search-input::placeholder { color: #475569; }
 
-    .search-count {
-      font-size: 12px; color: var(--text-muted);
-      white-space: nowrap;
-    }
+    .search-count { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
 
     .btn-refresh {
-      padding: 7px 14px;
-      background: rgba(37,99,235,0.15);
-      color: #93c5fd;
+      padding: 6px 12px;
+      background: rgba(37,99,235,0.15); color: #93c5fd;
       border: 1px solid rgba(37,99,235,0.3);
-      border-radius: 8px;
-      font-size: 12px; font-weight: 700;
+      border-radius: 7px; font-size: 11px; font-weight: 700;
       cursor: pointer; font-family: inherit;
-      transition: all .2s;
-      white-space: nowrap;
+      white-space: nowrap; transition: all .2s;
     }
     .btn-refresh:hover { background: rgba(37,99,235,0.25); }
 
-    .table-scroll { overflow-x: auto; }
+    /* ===== TABLE WITH SLIDER ===== */
+    .table-wrapper {
+      overflow: hidden;
+    }
+
+    .table-scroll-x {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #2563eb #1e293b;
+    }
+    .table-scroll-x::-webkit-scrollbar { height: 6px; }
+    .table-scroll-x::-webkit-scrollbar-track { background: #1e293b; }
+    .table-scroll-x::-webkit-scrollbar-thumb { background: #2563eb; border-radius: 4px; }
+
+    /* Slider control */
+    .slider-area {
+      padding: 8px 16px 10px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .slider-label { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+    .col-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 4px;
+      background: var(--surface2);
+      outline: none;
+      cursor: pointer;
+    }
+    .col-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #2563eb;
+      cursor: pointer;
+    }
+    .col-slider::-moz-range-thumb {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #2563eb;
+      cursor: pointer; border: none;
+    }
+    .slider-pos { font-size: 10px; color: #93c5fd; white-space: nowrap; min-width: 40px; text-align: right; }
 
     table {
-      width: 100%;
+      width: max-content;
       border-collapse: collapse;
-      font-size: 12px;
-      min-width: 700px;
+      font-size: 11px;
     }
-
     thead th {
       background: rgba(255,255,255,0.04);
-      padding: 10px 14px;
-      text-align: left;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      white-space: nowrap;
+      padding: 9px 12px;
+      text-align: left; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.4px;
+      color: var(--text-muted); white-space: nowrap;
       border-bottom: 1px solid var(--border);
     }
+    /* Kolom yang disembunyikan awalnya */
+    thead th.extra-col { display: none; }
+    tbody td.extra-col { display: none; }
 
     tbody td {
-      padding: 10px 14px;
+      padding: 9px 12px;
       border-bottom: 1px solid var(--border);
-      color: var(--text-sub);
-      white-space: nowrap;
+      color: var(--text-sub); white-space: nowrap;
+      max-width: 160px; overflow: hidden; text-overflow: ellipsis;
     }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover td { background: rgba(255,255,255,0.02); color: var(--text); }
     tbody tr.hidden-row { display: none; }
 
     .no-results {
-      text-align: center; padding: 40px;
-      color: var(--text-muted); font-size: 13px;
-      display: none;
+      text-align: center; padding: 30px;
+      color: var(--text-muted); font-size: 12px; display: none;
     }
-
-    .empty-state { text-align: center; padding: 50px; color: var(--text-muted); font-size: 13px; }
+    .empty-state { text-align: center; padding: 40px; color: var(--text-muted); font-size: 12px; }
     .error-banner {
       background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 10px; padding: 12px 16px; color: #fca5a5;
-      font-size: 13px; margin-bottom: 18px;
-    }
-
-    /* highlight search match */
-    mark {
-      background: rgba(245,158,11,0.3);
-      color: #fcd34d;
-      border-radius: 2px;
-      padding: 0 2px;
+      border-radius: 8px; padding: 10px 14px; color: #fca5a5;
+      font-size: 12px; margin-bottom: 16px;
     }
   </style>
 </head>
@@ -327,27 +318,35 @@
     <div class="error-banner">⚠️ {{ error }}</div>
     {% endif %}
 
-    <!-- Stat Cards 2x2 -->
+    <!-- Stat Cards 2x2 Compact -->
     <div class="stats-grid">
       <div class="stat-card stat-blue">
-        <div class="stat-label">Total ID Request</div>
-        <div class="stat-value" style="color:#93c5fd;">{{ summary | length }}</div>
-        <div class="stat-sub">ID unik tercatat</div>
+        <div class="stat-icon">🗂️</div>
+        <div>
+          <div class="stat-label">Total ID Request</div>
+          <div class="stat-value" style="color:#93c5fd;">{{ summary | length }}</div>
+        </div>
       </div>
       <div class="stat-card stat-green">
-        <div class="stat-label">Total CV Masuk</div>
-        <div class="stat-value" style="color:#6ee7b7;">{{ rows | length }}</div>
-        <div class="stat-sub">Semua submission</div>
+        <div class="stat-icon">📄</div>
+        <div>
+          <div class="stat-label">Total CV Masuk</div>
+          <div class="stat-value" style="color:#6ee7b7;">{{ rows | length }}</div>
+        </div>
       </div>
       <div class="stat-card stat-yellow">
-        <div class="stat-label">On Process</div>
-        <div class="stat-value" style="color:#fcd34d;">{{ rows | length }}</div>
-        <div class="stat-sub">CV sedang diproses</div>
+        <div class="stat-icon">⏳</div>
+        <div>
+          <div class="stat-label">On Process</div>
+          <div class="stat-value" style="color:#fcd34d;">{{ rows | length }}</div>
+        </div>
       </div>
       <div class="stat-card stat-purple">
-        <div class="stat-label">Total Data</div>
-        <div class="stat-value" style="color:#c4b5fd;">{{ rows | length }}</div>
-        <div class="stat-sub">Baris di spreadsheet</div>
+        <div class="stat-icon">📊</div>
+        <div>
+          <div class="stat-label">Total Data</div>
+          <div class="stat-value" style="color:#c4b5fd;">{{ rows | length }}</div>
+        </div>
       </div>
     </div>
 
@@ -370,10 +369,7 @@
             <div class="cv-dot"></div>
             <div>
               <div class="cv-nama">{{ entry.nama or '(Nama tidak tersedia)' }}</div>
-              <div class="cv-info">{{ entry.posisi or '-' }}</div>
-              {% if entry.cv_process %}
-              <div class="cv-info" style="color:#6ee7b7;">✅ CV: {{ entry.cv_process }}</div>
-              {% endif %}
+              <div class="cv-info">{{ entry.posisi or '-' }}{% if entry.cv_process %} · ✅ {{ entry.cv_process }}{% endif %}</div>
             </div>
           </div>
           {% endfor %}
@@ -391,48 +387,54 @@
     <div class="table-card">
       <div class="table-header">
         <h3>📋 Semua Data — Sheet "ID Request"</h3>
-        <div class="search-area">
-          <input
-            type="text"
-            class="search-input"
-            id="searchInput"
-            placeholder="🔍 Cari nama, ID, email, no. telp..."
-            oninput="cariData(this.value)"
-          />
-          <span class="search-count" id="searchCount"></span>
-        </div>
+        <input type="text" class="search-input" id="searchInput"
+          placeholder="🔍 Cari nama, ID, email, telp..."
+          oninput="cariData(this.value)" />
+        <span class="search-count" id="searchCount"></span>
         <button class="btn-refresh" onclick="location.reload()">🔄 Refresh</button>
       </div>
 
       {% if rows %}
-      <div class="table-scroll">
-        <table id="dataTable">
-          <thead>
-            <tr>
-              <th>#</th>
-              {% for h in headers %}
-                {% if h != 'Timestamp' %}
-                <th>{{ h }}</th>
-                {% endif %}
+      <div class="table-wrapper">
+        <div class="table-scroll-x" id="tableScrollX">
+          <table id="dataTable">
+            <thead>
+              <tr id="headerRow">
+                <th>#</th>
+                {% for h in headers %}
+                  {% if h != 'Timestamp' %}
+                  <th class="col-header">{{ h }}</th>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              {% for row in rows %}
+              <tr data-search="{{ row | join(' ') | lower }}">
+                <td style="color:#475569;">{{ loop.index }}</td>
+                {% for i, cell in row | enumerate %}
+                  {% if headers[i] != 'Timestamp' %}
+                  <td class="col-data">{{ cell }}</td>
+                  {% endif %}
+                {% endfor %}
+              </tr>
               {% endfor %}
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            {% for row in rows %}
-            <tr data-search="{{ row | join(' ') | lower }}">
-              <td style="color:#475569;">{{ loop.index }}</td>
-              {% for i, cell in row | enumerate %}
-                {% if headers[i] != 'Timestamp' %}
-                <td>{{ cell }}</td>
-                {% endif %}
-              {% endfor %}
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        <div class="no-results" id="noResults">
-          🔍 Tidak ada data yang cocok dengan pencarian Anda.
+            </tbody>
+          </table>
         </div>
+
+        <!-- Slider -->
+        <div class="slider-area">
+          <span class="slider-label">◀ Geser kolom ▶</span>
+          <input type="range" class="col-slider" id="colSlider"
+            min="0" max="100" value="0"
+            oninput="geserKolom(this.value)" />
+          <span class="slider-pos" id="sliderPos">Kolom 1–6</span>
+        </div>
+      </div>
+
+      <div class="no-results" id="noResults">
+        🔍 Tidak ada data yang cocok.
       </div>
       {% else %}
       <div class="empty-state">📭 Belum ada data di sheet "ID Request"</div>
@@ -443,6 +445,7 @@
 </div>
 
 <script>
+// ===== SEARCH =====
 function cariData(keyword) {
   const rows = document.querySelectorAll('#tableBody tr');
   const noResults = document.getElementById('noResults');
@@ -463,6 +466,38 @@ function cariData(keyword) {
   noResults.style.display = (visible === 0 && q) ? 'block' : 'none';
   searchCount.textContent = q ? `${visible} hasil` : '';
 }
+
+// ===== COLUMN SLIDER =====
+const COLS_VISIBLE = 6; // jumlah kolom yang tampil sekaligus
+
+function geserKolom(val) {
+  const headers = document.querySelectorAll('th.col-header');
+  const totalCols = headers.length;
+  const maxStart = Math.max(0, totalCols - COLS_VISIBLE);
+  const startIdx = Math.round((val / 100) * maxStart);
+  const endIdx = startIdx + COLS_VISIBLE;
+
+  headers.forEach((th, i) => {
+    const show = i >= startIdx && i < endIdx;
+    th.style.display = show ? '' : 'none';
+  });
+
+  // Update semua td juga
+  const allRows = document.querySelectorAll('#tableBody tr');
+  allRows.forEach(row => {
+    const cells = row.querySelectorAll('td.col-data');
+    cells.forEach((td, i) => {
+      const show = i >= startIdx && i < endIdx;
+      td.style.display = show ? '' : 'none';
+    });
+  });
+
+  document.getElementById('sliderPos').textContent =
+    `Kolom ${startIdx + 1}–${Math.min(endIdx, totalCols)}`;
+}
+
+// Init: tampilkan 6 kolom pertama saja
+window.addEventListener('load', () => geserKolom(0));
 </script>
 </body>
 </html>

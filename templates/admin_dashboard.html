@@ -3,501 +3,288 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard – Reethau</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Admin – Reethau</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0f172a;--sur:#1e293b;--sur2:#273349;
+      --bor:rgba(255,255,255,0.07);
+      --blue:#2563eb;--green:#10b981;--yellow:#f59e0b;--purple:#8b5cf6;
+      --tx:#f1f5f9;--tm:#64748b;--ts:#94a3b8;
+    }
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:12px;}
 
-    :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface2: #273349;
-      --border: rgba(255,255,255,0.07);
-      --blue: #2563eb;
-      --blue-light: #3b82f6;
-      --green: #10b981;
-      --yellow: #f59e0b;
-      --purple: #8b5cf6;
-      --text: #f1f5f9;
-      --text-muted: #64748b;
-      --text-sub: #94a3b8;
-    }
+    /* LAYOUT */
+    .wrap{display:flex;min-height:100vh;}
 
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+    /* SIDEBAR */
+    .side{
+      width:180px;background:var(--sur);border-right:1px solid var(--bor);
+      display:flex;flex-direction:column;padding:16px 10px;
+      position:fixed;height:100vh;top:0;left:0;
     }
+    .slogo{display:flex;align-items:center;gap:8px;padding:0 6px 16px;border-bottom:1px solid var(--bor);margin-bottom:16px;}
+    .sbox{width:30px;height:30px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;}
+    .slogo h1{font-size:13px;font-weight:800;color:#fff;}
+    .slogo p{font-size:9px;color:var(--tm);}
+    .nv{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:600;color:var(--ts);text-decoration:none;margin-bottom:2px;transition:.2s;}
+    .nv:hover{background:var(--sur2);color:var(--tx);}
+    .nv.on{background:rgba(37,99,235,0.15);color:#93c5fd;}
+    .sbot{margin-top:auto;padding-top:10px;border-top:1px solid var(--bor);}
 
-    .layout { display: flex; min-height: 100vh; }
+    /* MAIN */
+    .main{margin-left:180px;flex:1;padding:16px 20px;}
 
-    /* ===== SIDEBAR ===== */
-    .sidebar {
-      width: 200px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      display: flex; flex-direction: column;
-      padding: 18px 12px;
-      position: fixed; height: 100vh; top: 0; left: 0;
-    }
-    .sidebar-logo {
-      display: flex; align-items: center; gap: 9px;
-      padding: 0 6px 18px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 18px;
-    }
-    .logo-box {
-      width: 32px; height: 32px;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 900; color: #fff;
-    }
-    .sidebar-logo h1 { font-size: 14px; font-weight: 800; color: #fff; }
-    .sidebar-logo p  { font-size: 10px; color: var(--text-muted); }
+    /* PAGE HEADER */
+    .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+    .ph h2{font-size:16px;font-weight:800;}
+    .ph p{font-size:10px;color:var(--tm);margin-top:2px;}
+    .bdg{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+    .bdg-b{background:rgba(37,99,235,0.15);color:#93c5fd;border:1px solid rgba(37,99,235,0.3);}
+    .bdg-g{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);}
+    .bdg-y{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);}
 
-    .nav-item {
-      display: flex; align-items: center; gap: 9px;
-      padding: 8px 10px; border-radius: 7px;
-      font-size: 12px; font-weight: 600; color: var(--text-sub);
-      text-decoration: none; margin-bottom: 2px; transition: all .2s;
-    }
-    .nav-item:hover { background: var(--surface2); color: var(--text); }
-    .nav-item.active { background: rgba(37,99,235,0.15); color: #93c5fd; }
-    .nav-item span { font-size: 14px; }
-    .sidebar-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+    /* STAT CARDS — 4 in one row, compact */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+    .sc{background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;}
+    .sc-ico{font-size:18px;}
+    .sc-lbl{font-size:9px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.4px;}
+    .sc-val{font-size:18px;font-weight:800;margin-top:1px;}
+    .sc-b{border-left:3px solid var(--blue);}
+    .sc-g{border-left:3px solid var(--green);}
+    .sc-y{border-left:3px solid var(--yellow);}
+    .sc-p{border-left:3px solid var(--purple);}
 
-    /* ===== MAIN ===== */
-    .main { margin-left: 200px; flex: 1; padding: 20px 24px; }
+    /* ID CARDS */
+    .sec-t{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+    .idgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:20px;}
+    .idc{background:var(--sur);border:1px solid var(--bor);border-radius:9px;overflow:hidden;}
+    .idc:hover{border-color:rgba(37,99,235,0.4);}
+    .idch{padding:10px 14px 8px;border-bottom:1px solid var(--bor);display:flex;align-items:center;justify-content:space-between;}
+    .idn{font-size:13px;font-weight:800;color:#93c5fd;}
+    .idp{font-size:10px;color:var(--tm);margin-top:1px;}
+    .idcb{padding:8px 14px;max-height:150px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#2563eb #1e293b;}
+    .idcb::-webkit-scrollbar{width:3px;}
+    .idcb::-webkit-scrollbar-thumb{background:#2563eb;border-radius:4px;}
+    .cve{display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid var(--bor);}
+    .cve:last-child{border-bottom:none;}
+    .cvd{width:5px;height:5px;border-radius:50%;background:#3b82f6;margin-top:4px;flex-shrink:0;}
+    .cvn{font-size:11px;font-weight:700;color:var(--tx);}
+    .cvi{font-size:10px;color:var(--tm);margin-top:1px;}
+    .idcf{padding:7px 14px;background:rgba(255,255,255,0.02);border-top:1px solid var(--bor);display:flex;align-items:center;justify-content:space-between;}
+    .cvc{font-size:10px;color:var(--tm);}
+    .cvc strong{color:var(--tx);font-weight:700;}
 
-    .page-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 18px;
+    /* TABLE CARD */
+    .tcard{background:var(--sur);border:1px solid var(--bor);border-radius:9px;overflow:hidden;}
+    .thead{padding:10px 14px;border-bottom:1px solid var(--bor);display:flex;align-items:center;gap:8px;flex-wrap:nowrap;}
+    .thead h3{font-size:11px;font-weight:700;white-space:nowrap;margin-right:auto;}
+    .sinput{
+      padding:5px 10px;background:rgba(255,255,255,0.06);
+      border:1.5px solid rgba(255,255,255,0.1);border-radius:6px;
+      font-size:11px;color:var(--tx);font-family:inherit;outline:none;
+      transition:border-color .2s;width:180px;
     }
-    .page-header h2 { font-size: 18px; font-weight: 800; }
-    .page-header p  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .sinput:focus{border-color:#2563eb;}
+    .sinput::placeholder{color:#475569;}
+    .scnt{font-size:10px;color:var(--tm);white-space:nowrap;}
+    .rbtn{
+      padding:5px 10px;background:rgba(37,99,235,0.15);color:#93c5fd;
+      border:1px solid rgba(37,99,235,0.3);border-radius:6px;
+      font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;
+      white-space:nowrap;transition:.2s;
+    }
+    .rbtn:hover{background:rgba(37,99,235,0.25);}
 
-    .badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 9px; border-radius: 20px;
-      font-size: 10px; font-weight: 700;
-    }
-    .badge-blue   { background: rgba(37,99,235,0.15);  color: #93c5fd;  border: 1px solid rgba(37,99,235,0.3); }
-    .badge-green  { background: rgba(16,185,129,0.15); color: #6ee7b7;  border: 1px solid rgba(16,185,129,0.3); }
-    .badge-yellow { background: rgba(245,158,11,0.15); color: #fcd34d;  border: 1px solid rgba(245,158,11,0.3); }
+    /* TABLE */
+    .tscroll{overflow-x:auto;scrollbar-width:thin;scrollbar-color:#2563eb #1e293b;}
+    .tscroll::-webkit-scrollbar{height:5px;}
+    .tscroll::-webkit-scrollbar-track{background:#1e293b;}
+    .tscroll::-webkit-scrollbar-thumb{background:#2563eb;border-radius:4px;}
 
-    /* ===== STAT GRID 2x2 COMPACT ===== */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
+    table{border-collapse:collapse;font-size:11px;width:100%;}
+    thead th{
+      background:rgba(255,255,255,0.04);padding:8px 10px;
+      text-align:left;font-size:9px;font-weight:700;
+      text-transform:uppercase;letter-spacing:.4px;color:var(--tm);
+      white-space:nowrap;border-bottom:1px solid var(--bor);
     }
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 16px;
-      display: flex; align-items: center; gap: 12px;
+    tbody td{
+      padding:7px 10px;border-bottom:1px solid var(--bor);
+      color:var(--ts);white-space:nowrap;
+      max-width:130px;overflow:hidden;text-overflow:ellipsis;
     }
-    .stat-icon { font-size: 22px; }
-    .stat-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
-    .stat-value { font-size: 20px; font-weight: 800; margin: 2px 0 0; }
-    .stat-blue   { border-left: 3px solid var(--blue); }
-    .stat-green  { border-left: 3px solid var(--green); }
-    .stat-yellow { border-left: 3px solid var(--yellow); }
-    .stat-purple { border-left: 3px solid var(--purple); }
+    tbody tr:last-child td{border-bottom:none;}
+    tbody tr:hover td{background:rgba(255,255,255,0.02);color:var(--tx);}
+    tbody tr.hr{display:none;}
 
-    /* ===== ID CARDS ===== */
-    .section-title {
-      font-size: 13px; font-weight: 800;
-      margin-bottom: 12px;
-      display: flex; align-items: center; gap: 6px;
+    /* SLIDER */
+    .slarea{padding:7px 14px 9px;border-top:1px solid var(--bor);display:flex;align-items:center;gap:8px;}
+    .sllbl{font-size:9px;color:var(--tm);white-space:nowrap;}
+    .slr{
+      flex:1;-webkit-appearance:none;height:3px;border-radius:4px;
+      background:var(--sur2);outline:none;cursor:pointer;
     }
-    .id-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .id-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px; overflow: hidden;
-      transition: border-color .2s;
-    }
-    .id-card:hover { border-color: rgba(37,99,235,0.4); }
-    .id-card-header {
-      padding: 12px 16px 10px;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .id-number { font-size: 15px; font-weight: 800; color: #93c5fd; }
-    .id-posisi { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-    .id-card-body {
-      padding: 10px 16px;
-      max-height: 180px; overflow-y: auto;
-      scrollbar-width: thin; scrollbar-color: #2563eb #1e293b;
-    }
-    .id-card-body::-webkit-scrollbar { width: 4px; }
-    .id-card-body::-webkit-scrollbar-track { background: #1e293b; }
-    .id-card-body::-webkit-scrollbar-thumb { background: #2563eb; border-radius: 4px; }
-    .cv-entry {
-      display: flex; align-items: flex-start; gap: 8px;
-      padding: 7px 0; border-bottom: 1px solid var(--border);
-    }
-    .cv-entry:last-child { border-bottom: none; }
-    .cv-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-light); margin-top: 5px; flex-shrink: 0; }
-    .cv-nama { font-size: 12px; font-weight: 700; color: var(--text); }
-    .cv-info { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
-    .id-card-footer {
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.02);
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .cv-count { font-size: 11px; color: var(--text-muted); }
-    .cv-count strong { color: var(--text); font-weight: 700; }
+    .slr::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#2563eb;cursor:pointer;}
+    .slr::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#2563eb;cursor:pointer;border:none;}
+    .slpos{font-size:9px;color:#93c5fd;white-space:nowrap;min-width:50px;text-align:right;}
 
-    /* ===== TABLE CARD ===== */
-    .table-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px; overflow: hidden;
-    }
-
-    .table-header {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; gap: 10px;
-      flex-wrap: nowrap;
-    }
-    .table-header h3 { font-size: 12px; font-weight: 700; white-space: nowrap; margin-right: auto; }
-
-    .search-input {
-      padding: 6px 12px;
-      background: rgba(255,255,255,0.06);
-      border: 1.5px solid rgba(255,255,255,0.1);
-      border-radius: 7px;
-      font-size: 12px; color: var(--text);
-      font-family: inherit; outline: none;
-      transition: border-color .2s;
-      width: 200px;
-    }
-    .search-input:focus { border-color: #2563eb; }
-    .search-input::placeholder { color: #475569; }
-
-    .search-count { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
-
-    .btn-refresh {
-      padding: 6px 12px;
-      background: rgba(37,99,235,0.15); color: #93c5fd;
-      border: 1px solid rgba(37,99,235,0.3);
-      border-radius: 7px; font-size: 11px; font-weight: 700;
-      cursor: pointer; font-family: inherit;
-      white-space: nowrap; transition: all .2s;
-    }
-    .btn-refresh:hover { background: rgba(37,99,235,0.25); }
-
-    /* ===== TABLE WITH SLIDER ===== */
-    .table-wrapper {
-      overflow: hidden;
-    }
-
-    .table-scroll-x {
-      overflow-x: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #2563eb #1e293b;
-    }
-    .table-scroll-x::-webkit-scrollbar { height: 6px; }
-    .table-scroll-x::-webkit-scrollbar-track { background: #1e293b; }
-    .table-scroll-x::-webkit-scrollbar-thumb { background: #2563eb; border-radius: 4px; }
-
-    /* Slider control */
-    .slider-area {
-      padding: 8px 16px 10px;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; gap: 10px;
-    }
-    .slider-label { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
-    .col-slider {
-      flex: 1;
-      -webkit-appearance: none;
-      height: 4px;
-      border-radius: 4px;
-      background: var(--surface2);
-      outline: none;
-      cursor: pointer;
-    }
-    .col-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: #2563eb;
-      cursor: pointer;
-    }
-    .col-slider::-moz-range-thumb {
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: #2563eb;
-      cursor: pointer; border: none;
-    }
-    .slider-pos { font-size: 10px; color: #93c5fd; white-space: nowrap; min-width: 40px; text-align: right; }
-
-    table {
-      width: max-content;
-      border-collapse: collapse;
-      font-size: 11px;
-    }
-    thead th {
-      background: rgba(255,255,255,0.04);
-      padding: 9px 12px;
-      text-align: left; font-size: 10px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.4px;
-      color: var(--text-muted); white-space: nowrap;
-      border-bottom: 1px solid var(--border);
-    }
-    /* Kolom yang disembunyikan awalnya */
-    thead th.extra-col { display: none; }
-    tbody td.extra-col { display: none; }
-
-    tbody td {
-      padding: 9px 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-sub); white-space: nowrap;
-      max-width: 160px; overflow: hidden; text-overflow: ellipsis;
-    }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover td { background: rgba(255,255,255,0.02); color: var(--text); }
-    tbody tr.hidden-row { display: none; }
-
-    .no-results {
-      text-align: center; padding: 30px;
-      color: var(--text-muted); font-size: 12px; display: none;
-    }
-    .empty-state { text-align: center; padding: 40px; color: var(--text-muted); font-size: 12px; }
-    .error-banner {
-      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 8px; padding: 10px 14px; color: #fca5a5;
-      font-size: 12px; margin-bottom: 16px;
-    }
+    .nores{text-align:center;padding:24px;color:var(--tm);font-size:11px;display:none;}
+    .empty{text-align:center;padding:40px;color:var(--tm);}
+    .errbanner{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:8px 12px;color:#fca5a5;font-size:11px;margin-bottom:14px;}
   </style>
 </head>
 <body>
-<div class="layout">
+<div class="wrap">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-box">R</div>
-      <div>
-        <h1>REETHAU</h1>
-        <p>Admin Panel</p>
-      </div>
+  <aside class="side">
+    <div class="slogo">
+      <div class="sbox">R</div>
+      <div><h1>REETHAU</h1><p>Admin Panel</p></div>
     </div>
-    <a href="/admin/dashboard" class="nav-item active"><span>📊</span> Dashboard</a>
-    <a href="/" class="nav-item"><span>📋</span> Form Input</a>
-    <a href="https://docs.google.com/spreadsheets/d/1M76I4Ryik_oRX81hyjI_7mpWhwUfGYq-rIscEqJ_YwI/edit" target="_blank" class="nav-item"><span>📄</span> Spreadsheet ↗</a>
-    <div class="sidebar-bottom">
-      <a href="/admin/logout" class="nav-item"><span>🚪</span> Logout</a>
-    </div>
+    <a href="/admin/dashboard" class="nv on">📊 Dashboard</a>
+    <a href="/" class="nv">📋 Form Input</a>
+    <a href="https://docs.google.com/spreadsheets/d/1M76I4Ryik_oRX81hyjI_7mpWhwUfGYq-rIscEqJ_YwI/edit" target="_blank" class="nv">📄 Spreadsheet ↗</a>
+    <div class="sbot"><a href="/admin/logout" class="nv">🚪 Logout</a></div>
   </aside>
 
-  <!-- Main -->
   <main class="main">
-    <div class="page-header">
-      <div>
-        <h2>📊 Dashboard Admin</h2>
-        <p>Rekap data CV per ID Request</p>
-      </div>
-      <span class="badge badge-blue">🔐 Administrator</span>
+    <div class="ph">
+      <div><h2>📊 Dashboard Admin</h2><p>Rekap data CV per ID Request</p></div>
+      <span class="bdg bdg-b">🔐 Administrator</span>
     </div>
 
-    {% if error %}
-    <div class="error-banner">⚠️ {{ error }}</div>
-    {% endif %}
+    {% if error %}<div class="errbanner">⚠️ {{ error }}</div>{% endif %}
 
-    <!-- Stat Cards 2x2 Compact -->
-    <div class="stats-grid">
-      <div class="stat-card stat-blue">
-        <div class="stat-icon">🗂️</div>
-        <div>
-          <div class="stat-label">Total ID Request</div>
-          <div class="stat-value" style="color:#93c5fd;">{{ summary | length }}</div>
-        </div>
+    <!-- 4 stat cards in one row -->
+    <div class="stats">
+      <div class="sc sc-b">
+        <div class="sc-ico">🗂️</div>
+        <div><div class="sc-lbl">Total ID Request</div><div class="sc-val" style="color:#93c5fd;">{{ summary|length }}</div></div>
       </div>
-      <div class="stat-card stat-green">
-        <div class="stat-icon">📄</div>
-        <div>
-          <div class="stat-label">Total CV Masuk</div>
-          <div class="stat-value" style="color:#6ee7b7;">{{ rows | length }}</div>
-        </div>
+      <div class="sc sc-g">
+        <div class="sc-ico">📄</div>
+        <div><div class="sc-lbl">Total CV Masuk</div><div class="sc-val" style="color:#6ee7b7;">{{ rows|length }}</div></div>
       </div>
-      <div class="stat-card stat-yellow">
-        <div class="stat-icon">⏳</div>
-        <div>
-          <div class="stat-label">On Process</div>
-          <div class="stat-value" style="color:#fcd34d;">{{ rows | length }}</div>
-        </div>
+      <div class="sc sc-y">
+        <div class="sc-ico">⏳</div>
+        <div><div class="sc-lbl">On Process</div><div class="sc-val" style="color:#fcd34d;">{{ rows|length }}</div></div>
       </div>
-      <div class="stat-card stat-purple">
-        <div class="stat-icon">📊</div>
-        <div>
-          <div class="stat-label">Total Data</div>
-          <div class="stat-value" style="color:#c4b5fd;">{{ rows | length }}</div>
-        </div>
+      <div class="sc sc-p">
+        <div class="sc-ico">📊</div>
+        <div><div class="sc-lbl">Total Data</div><div class="sc-val" style="color:#c4b5fd;">{{ rows|length }}</div></div>
       </div>
     </div>
 
-    <!-- Per ID Request Cards -->
+    <!-- ID Cards -->
     {% if summary %}
-    <div class="section-title">🗂️ Rekap CV per ID Request</div>
-    <div class="id-grid">
+    <div class="sec-t">🗂️ Rekap CV per ID Request</div>
+    <div class="idgrid">
       {% for id_req, info in summary.items() %}
-      <div class="id-card">
-        <div class="id-card-header">
-          <div>
-            <div class="id-number">ID # {{ id_req }}</div>
-            <div class="id-posisi">{{ info.posisi }} — {{ info.penempatan }}</div>
-          </div>
-          <span class="badge badge-yellow">On Process</span>
+      <div class="idc">
+        <div class="idch">
+          <div><div class="idn">ID # {{ id_req }}</div><div class="idp">{{ info.posisi }} — {{ info.penempatan }}</div></div>
+          <span class="bdg bdg-y">On Process</span>
         </div>
-        <div class="id-card-body">
+        <div class="idcb">
           {% for entry in info.entries %}
-          <div class="cv-entry">
-            <div class="cv-dot"></div>
+          <div class="cve">
+            <div class="cvd"></div>
             <div>
-              <div class="cv-nama">{{ entry.nama or '(Nama tidak tersedia)' }}</div>
-              <div class="cv-info">{{ entry.posisi or '-' }}{% if entry.cv_process %} · ✅ {{ entry.cv_process }}{% endif %}</div>
+              <div class="cvn">{{ entry.nama or '—' }}</div>
+              <div class="cvi">{{ entry.posisi or '—' }}{% if entry.cv_process %} · ✅ {{ entry.cv_process }}{% endif %}</div>
             </div>
           </div>
           {% endfor %}
         </div>
-        <div class="id-card-footer">
-          <span class="cv-count">Total CV: <strong>{{ info.total_cv }}</strong></span>
-          <span class="badge badge-green">{{ info.total_cv }} submission</span>
+        <div class="idcf">
+          <span class="cvc">Total CV: <strong>{{ info.total_cv }}</strong></span>
+          <span class="bdg bdg-g">{{ info.total_cv }} submission</span>
         </div>
       </div>
       {% endfor %}
     </div>
     {% endif %}
 
-    <!-- Full Table -->
-    <div class="table-card">
-      <div class="table-header">
+    <!-- Table -->
+    <div class="tcard">
+      <div class="thead">
         <h3>📋 Semua Data — Sheet "ID Request"</h3>
-        <input type="text" class="search-input" id="searchInput"
-          placeholder="🔍 Cari nama, ID, email, telp..."
-          oninput="cariData(this.value)" />
-        <span class="search-count" id="searchCount"></span>
-        <button class="btn-refresh" onclick="location.reload()">🔄 Refresh</button>
+        <input type="text" class="sinput" id="si" placeholder="🔍 Cari nama, ID, email, telp..." oninput="cari(this.value)"/>
+        <span class="scnt" id="sc2"></span>
+        <button class="rbtn" onclick="location.reload()">🔄 Refresh</button>
       </div>
 
       {% if rows %}
-      <div class="table-wrapper">
-        <div class="table-scroll-x" id="tableScrollX">
-          <table id="dataTable">
-            <thead>
-              <tr id="headerRow">
-                <th>#</th>
-                {% for h in headers %}
-                  {% if h != 'Timestamp' %}
-                  <th class="col-header">{{ h }}</th>
-                  {% endif %}
-                {% endfor %}
-              </tr>
-            </thead>
-            <tbody id="tableBody">
-              {% for row in rows %}
-              <tr data-search="{{ row | join(' ') | lower }}">
-                <td style="color:#475569;">{{ loop.index }}</td>
-                {% for i, cell in row | enumerate %}
-                  {% if headers[i] != 'Timestamp' %}
-                  <td class="col-data">{{ cell }}</td>
-                  {% endif %}
-                {% endfor %}
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Slider -->
-        <div class="slider-area">
-          <span class="slider-label">◀ Geser kolom ▶</span>
-          <input type="range" class="col-slider" id="colSlider"
-            min="0" max="100" value="0"
-            oninput="geserKolom(this.value)" />
-          <span class="slider-pos" id="sliderPos">Kolom 1–6</span>
-        </div>
+      <div class="tscroll" id="ts">
+        <table id="dt">
+          <thead>
+            <tr id="hr">
+              <th style="width:30px">#</th>
+              {% for h in headers %}{% if h != 'Timestamp' %}<th class="ch">{{ h }}</th>{% endif %}{% endfor %}
+            </tr>
+          </thead>
+          <tbody id="tb">
+            {% for row in rows %}
+            <tr data-s="{{ row|join(' ')|lower }}">
+              <td style="color:#475569;">{{ loop.index }}</td>
+              {% for i, cell in row|enumerate %}{% if headers[i] != 'Timestamp' %}<td class="cd">{{ cell }}</td>{% endif %}{% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-
-      <div class="no-results" id="noResults">
-        🔍 Tidak ada data yang cocok.
+      <div class="slarea">
+        <span class="sllbl">◀ Geser kolom ▶</span>
+        <input type="range" class="slr" id="sl" min="0" max="100" value="0" oninput="geser(this.value)"/>
+        <span class="slpos" id="sp">1–6</span>
       </div>
+      <div class="nores" id="nr">🔍 Tidak ada hasil.</div>
       {% else %}
-      <div class="empty-state">📭 Belum ada data di sheet "ID Request"</div>
+      <div class="empty">📭 Belum ada data</div>
       {% endif %}
     </div>
-
   </main>
 </div>
 
 <script>
-// ===== SEARCH =====
-function cariData(keyword) {
-  const rows = document.querySelectorAll('#tableBody tr');
-  const noResults = document.getElementById('noResults');
-  const searchCount = document.getElementById('searchCount');
-  const q = keyword.trim().toLowerCase();
-  let visible = 0;
+const SHOW = 6;
 
-  rows.forEach(row => {
-    const text = row.getAttribute('data-search') || '';
-    if (!q || text.includes(q)) {
-      row.classList.remove('hidden-row');
-      visible++;
-    } else {
-      row.classList.add('hidden-row');
-    }
-  });
+function geser(v) {
+  const ths = document.querySelectorAll('th.ch');
+  const total = ths.length;
+  const max = Math.max(0, total - SHOW);
+  const start = Math.round((v / 100) * max);
+  const end = start + SHOW;
 
-  noResults.style.display = (visible === 0 && q) ? 'block' : 'none';
-  searchCount.textContent = q ? `${visible} hasil` : '';
-}
+  ths.forEach((th, i) => th.style.display = (i >= start && i < end) ? '' : 'none');
 
-// ===== COLUMN SLIDER =====
-const COLS_VISIBLE = 6; // jumlah kolom yang tampil sekaligus
-
-function geserKolom(val) {
-  const headers = document.querySelectorAll('th.col-header');
-  const totalCols = headers.length;
-  const maxStart = Math.max(0, totalCols - COLS_VISIBLE);
-  const startIdx = Math.round((val / 100) * maxStart);
-  const endIdx = startIdx + COLS_VISIBLE;
-
-  headers.forEach((th, i) => {
-    const show = i >= startIdx && i < endIdx;
-    th.style.display = show ? '' : 'none';
-  });
-
-  // Update semua td juga
-  const allRows = document.querySelectorAll('#tableBody tr');
-  allRows.forEach(row => {
-    const cells = row.querySelectorAll('td.col-data');
-    cells.forEach((td, i) => {
-      const show = i >= startIdx && i < endIdx;
-      td.style.display = show ? '' : 'none';
+  document.querySelectorAll('#tb tr').forEach(row => {
+    row.querySelectorAll('td.cd').forEach((td, i) => {
+      td.style.display = (i >= start && i < end) ? '' : 'none';
     });
   });
 
-  document.getElementById('sliderPos').textContent =
-    `Kolom ${startIdx + 1}–${Math.min(endIdx, totalCols)}`;
+  document.getElementById('sp').textContent = `${start+1}–${Math.min(end, total)}`;
 }
 
-// Init: tampilkan 6 kolom pertama saja
-window.addEventListener('load', () => geserKolom(0));
+function cari(q) {
+  const rows = document.querySelectorAll('#tb tr');
+  const nr = document.getElementById('nr');
+  const sc = document.getElementById('sc2');
+  const kw = q.trim().toLowerCase();
+  let n = 0;
+  rows.forEach(r => {
+    const match = !kw || (r.getAttribute('data-s') || '').includes(kw);
+    r.classList.toggle('hr', !match);
+    if (match) n++;
+  });
+  nr.style.display = (!n && kw) ? 'block' : 'none';
+  sc.textContent = kw ? `${n} hasil` : '';
+}
+
+window.addEventListener('load', () => geser(0));
 </script>
 </body>
 </html>

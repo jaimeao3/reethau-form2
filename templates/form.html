@@ -6,6 +6,24 @@
   <title>Form Permintaan Tenaga Kerja – Reethau</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+<script>
+  setTimeout(function() {
+    fetch('/get-all-ids')
+      .then(r => r.json())
+      .then(result => {
+        const select = document.getElementById('id_request_select');
+        if (result.ids && result.ids.length > 0) {
+          while (select.options.length > 1) select.remove(1);
+          result.ids.forEach(id => {
+            const opt = document.createElement('option');
+            opt.value = id;
+            opt.text = id;
+            select.add(opt);
+          });
+        }
+      });
+  }, 500);
+</script>
 <body>
   <div class="wrapper">
     <!-- Header -->
@@ -193,6 +211,27 @@
           </div>
         </div>
 
+        <!-- SECTION E: Upload CV -->
+        <div class="card section-card">
+          <div class="section-header blue">
+            <span class="section-icon">📎</span>
+            <h3>E. Upload CV</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Upload CV Pelamar <span style="color:#64748b;font-weight:400;">(PDF, DOC, DOCX, JPG, PNG — maks 10MB)</span></label>
+              <div id="uploadArea" style="border:2px dashed #d1d5db;border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:#f9fafb;transition:all .2s;" onclick="document.getElementById('cvFileInput').click()" ondragover="dragOver(event)" ondrop="dropFile(event)">
+                <div id="uploadIcon" style="font-size:32px;margin-bottom:8px;">📄</div>
+                <div id="uploadText" style="font-size:14px;color:#64748b;">Klik atau drag & drop file CV di sini</div>
+                <div id="uploadSub" style="font-size:12px;color:#9ca3af;margin-top:4px;">Format: PDF, DOC, DOCX, JPG, PNG</div>
+              </div>
+              <input type="file" id="cvFileInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display:none;" onchange="fileSelected(this)"/>
+              <input type="hidden" name="cv_link" id="cvLinkHidden"/>
+              <div id="uploadStatus" style="margin-top:10px;display:none;"></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Submit -->
         <div class="submit-area">
           <button type="submit" id="submitBtn" class="btn-submit">
@@ -209,32 +248,109 @@
       <p>© 2024 Reethau HRIS · Data tersimpan otomatis ke Google Spreadsheet</p>
     </footer>
   </div>
-</body>
-</html>
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script>
-    function isiDropdown() {
-      var select = document.getElementById('id_request_select');
-      if (!select) return;
+    // ===== CV UPLOAD =====
+    let cvUploaded = false;
+
+    function dragOver(e) {
+      e.preventDefault();
+      document.getElementById('uploadArea').style.borderColor = '#2563eb';
+      document.getElementById('uploadArea').style.background = '#eff6ff';
+    }
+
+    function dropFile(e) {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file) uploadCV(file);
+      document.getElementById('uploadArea').style.borderColor = '#d1d5db';
+      document.getElementById('uploadArea').style.background = '#f9fafb';
+    }
+
+    function fileSelected(input) {
+      if (input.files[0]) uploadCV(input.files[0]);
+    }
+
+    async function uploadCV(file) {
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        showUploadStatus('error', '❌ File terlalu besar. Maksimal 10MB.');
+        return;
+      }
+
+      const namaPelamar = document.querySelector('[name="nama_pelamar"]').value || 'Kandidat';
+
+      // Update UI
+      document.getElementById('uploadIcon').textContent = '⏳';
+      document.getElementById('uploadText').textContent = 'Mengupload CV...';
+      document.getElementById('uploadSub').textContent = file.name;
+      showUploadStatus('loading', '⏳ Sedang mengupload ke Google Drive...');
+
+      const formData = new FormData();
+      formData.append('cv_file', file);
+      formData.append('nama_pelamar', namaPelamar);
+
+      try {
+        const res = await fetch('/upload-cv', { method: 'POST', body: formData });
+        const result = await res.json();
+
+        if (result.status === 'success') {
+          document.getElementById('cvLinkHidden').value = result.link;
+          document.getElementById('uploadIcon').textContent = '✅';
+          document.getElementById('uploadText').textContent = result.filename;
+          document.getElementById('uploadArea').style.borderColor = '#10b981';
+          document.getElementById('uploadArea').style.background = '#f0fdf4';
+          showUploadStatus('success', `✅ CV berhasil diupload! <a href="${result.link}" target="_blank" style="color:#2563eb;font-weight:700;">Lihat CV ↗</a>`);
+          cvUploaded = true;
+        } else {
+          document.getElementById('uploadIcon').textContent = '❌';
+          document.getElementById('uploadText').textContent = 'Upload gagal, coba lagi';
+          showUploadStatus('error', '❌ ' + result.message);
+        }
+      } catch (err) {
+        showUploadStatus('error', '❌ Gagal menghubungi server.');
+      }
+    }
+
+    function showUploadStatus(type, msg) {
+      const el = document.getElementById('uploadStatus');
+      el.style.display = 'block';
+      const colors = {
+        success: { bg: '#f0fdf4', border: '#bbf7d0', color: '#16a34a' },
+        error:   { bg: '#fef2f2', border: '#fecaca', color: '#dc2626' },
+        loading: { bg: '#eff6ff', border: '#bfdbfe', color: '#2563eb' },
+      };
+      const c = colors[type] || colors.loading;
+      el.style.background = c.bg;
+      el.style.border = `1.5px solid ${c.border}`;
+      el.style.borderRadius = '8px';
+      el.style.padding = '10px 14px';
+      el.style.fontSize = '13px';
+      el.style.color = c.color;
+      el.innerHTML = msg;
+    }
+  </script>
+</body>
+</html>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    setTimeout(function() {
       fetch('/get-all-ids')
-        .then(function(r) { return r.json(); })
-        .then(function(result) {
+        .then(r => r.json())
+        .then(result => {
+          const select = document.getElementById('id_request_select');
           if (result.ids && result.ids.length > 0) {
             while (select.options.length > 1) select.remove(1);
-            result.ids.forEach(function(id) {
-              var opt = document.createElement('option');
+            result.ids.forEach(id => {
+              const opt = document.createElement('option');
               opt.value = id;
               opt.text = id;
-              select.appendChild(opt);
+              select.add(opt);
             });
           }
-        })
-        .catch(function(e) { console.log('Gagal load IDs:', e); });
-    }
-    setTimeout(isiDropdown, 200);
-    setTimeout(isiDropdown, 800);
-    setTimeout(isiDropdown, 2000);
+        });
+    }, 500);
   </script>
 </body>
 </html>

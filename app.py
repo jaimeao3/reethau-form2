@@ -1,16 +1,26 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import gspread
 from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
 from datetime import datetime
 from functools import wraps
 import os
 import json
+import io
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "reethau_secret_key_2024")
 app.jinja_env.filters['enumerate'] = enumerate
 
 SPREADSHEET_ID = "1M76I4Ryik_oRX81hyjI_7mpWhwUfGYq-rIscEqJ_YwI"
+
+# ============================================================
+# GANTI dengan ID folder Google Drive tempat CV disimpan
+# Cara dapat ID folder: buka folder di Google Drive,
+# lihat URL: https://drive.google.com/drive/folders/[FOLDER_ID]
+DRIVE_FOLDER_ID = os.environ.get("DRIVE_FOLDER_ID", "GANTI_FOLDER_ID_DRIVE")
+# ============================================================
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -20,15 +30,21 @@ SCOPES = [
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "reethau2024")
 
-def get_sheet():
+def get_credentials():
     creds_json = os.environ.get("GOOGLE_CREDENTIALS")
     if creds_json:
         creds_dict = json.loads(creds_json)
-        creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
-    else:
-        creds = Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+        return Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+    return Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+
+def get_sheet():
+    creds = get_credentials()
     client = gspread.authorize(creds)
     return client.open_by_key(SPREADSHEET_ID)
+
+def get_drive_service():
+    creds = get_credentials()
+    return build('drive', 'v3', credentials=creds)
 
 def ensure_sheet(sheet_obj, title, headers):
     try:
@@ -53,6 +69,83 @@ def login_required(f):
             return redirect(url_for('admin_login'))
         return f(*args, **kwargs)
     return decorated
+
+# ==================== UPLOAD CV ====================
+
+@app.route("/upload-cv", methods=["POST"])
+def upload_cv():
+    """Upload CV ke Google Drive dan kembalikan link."""
+    try:
+        if 'cv_file' not in request.files:
+            return jsonify({"status": "error", "message": "File CV tidak ditemukan"}), 400
+
+        file = request.files['cv_file']
+        nama_pelamar = request.form.get("nama_pelamar", "Kandidat")
+
+        if file.filename == '':
+            return jsonify({"status": "error", "message": "Tidak ada file dipilih"}), 400
+
+        # Validasi tipe file
+        allowed = {'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'}
+        ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+        if ext not in allowed:
+            return jsonify({"status": "error", "message": f"Tipe file tidak didukung. Gunakan: PDF, DOC, DOCX, JPG, PNG"}), 400
+
+        # Nama file di Drive: CV_NamaPelamar_Timestamp.ext
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        safe_name = nama_pelamar.replace(" ", "_").replace("/", "_")
+        filename = f"CV_{safe_name}_{timestamp}.{ext}"
+
+        # Upload ke Google Drive
+        drive_service = get_drive_service()
+
+        file_metadata = {
+            'name': filename,
+            'parents': [DRIVE_FOLDER_ID]
+        }
+
+        mime_types = {
+            'pdf': 'application/pdf',
+            'doc': 'application/msword',
+            'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'jpg': 'image/jpeg',
+            'jpeg': 'image/jpeg',
+            'png': 'image/png',
+        }
+        mime_type = mime_types.get(ext, 'application/octet-stream')
+
+        file_content = file.read()
+        media = MediaIoBaseUpload(
+            io.BytesIO(file_content),
+            mimetype=mime_type,
+            resumable=False
+        )
+
+        uploaded = drive_service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields='id, name, webViewLink'
+        ).execute()
+
+        # Set permission: anyone with link can view
+        drive_service.permissions().create(
+            fileId=uploaded['id'],
+            body={'type': 'anyone', 'role': 'reader'}
+        ).execute()
+
+        link = uploaded.get('webViewLink', '')
+
+        return jsonify({
+            "status": "success",
+            "link": link,
+            "filename": filename,
+            "file_id": uploaded['id']
+        })
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# ==================== MAIN FORM ====================
 
 @app.route("/")
 def index():
@@ -136,22 +229,30 @@ def submit():
         tahun = datetime.now().year
         tgl_request = datetime.now().strftime("%Y-%m-%d")
         id_request_dipilih = data.get("id_request", "")
+        cv_link = data.get("cv_link", "")  # Link CV dari Google Drive
 
+        # ---- Hasil Input ----
         HEADERS_HASIL = [
             "NO", "Tahun Request", "ID Request", "Tanggal Request FPK",
             "Tanggal Request PTK", "Nama", "Posisi Lamaran", "Penempatan", "Grade",
-            "Induk Perusahaan", "Link Form", "No Tlp", "Email", "ID Request Dipilih"
+            "Induk Perusahaan", "Link CV", "No Tlp", "Email", "ID Request Dipilih"
         ]
         hasil_sheet = ensure_sheet(sheet_obj, "Hasil Input", HEADERS_HASIL)
         hasil_sheet.append_row([
             get_next_id(hasil_sheet), tahun, id_request_dipilih, tgl_request,
-            data.get("tgl_request_ptk", ""), data.get("nama_pelamar", ""),
-            data.get("posisi_lamaran", ""), data.get("penempatan", ""),
-            data.get("grade", ""), data.get("induk_perusahaan", ""),
-            data.get("link_form", ""), data.get("no_tlp", ""),
-            data.get("email", ""), id_request_dipilih,
+            data.get("tgl_request_ptk", ""),
+            data.get("nama_pelamar", ""),
+            data.get("posisi_lamaran", ""),
+            data.get("penempatan", ""),
+            data.get("grade", ""),
+            data.get("induk_perusahaan", ""),
+            cv_link,
+            data.get("no_tlp", ""),
+            data.get("email", ""),
+            id_request_dipilih,
         ])
 
+        # ---- Form Permintaan ----
         HEADERS_FPK = [
             "Divisi", "ID Form Permintaan Tenaga Kerja", "FPK Name", "PT Induk",
             "Lokasi Penempatan", "Grade", "Tanggal Request FPK", "Tanggal Approve BOD",
@@ -160,25 +261,29 @@ def submit():
         ]
         fpk_sheet = ensure_sheet(sheet_obj, "Form Permintaan", HEADERS_FPK)
         fpk_sheet.append_row([
-            data.get("divisi", ""), id_request_dipilih, data.get("fpk_name", ""),
-            data.get("induk_perusahaan", ""), data.get("penempatan", ""),
-            data.get("grade", ""), tgl_request, data.get("tgl_approve_bod", ""),
+            data.get("divisi", ""), id_request_dipilih,
+            data.get("fpk_name", ""), data.get("induk_perusahaan", ""),
+            data.get("penempatan", ""), data.get("grade", ""),
+            tgl_request, data.get("tgl_approve_bod", ""),
             data.get("form_fpk", "NO"), data.get("budget_status", "Non Budget"),
             data.get("category", ""), data.get("detail_category", ""),
-            tahun, data.get("jumlah_hari", ""), data.get("vacancy_request", 1),
+            tahun, data.get("jumlah_hari", ""),
+            data.get("vacancy_request", 1),
             data.get("joined", ""), data.get("cv_process", ""),
         ])
 
+        # ---- ID Request ----
         HEADERS_ID = [
             "Timestamp", "ID Request Dipilih", "Nama Pelamar", "No Tlp", "Email",
             "Posisi Lamaran", "Penempatan", "Grade", "Induk Perusahaan",
             "FPK Name", "Divisi", "Budget/Non Budget", "Category", "Detail Category",
             "Vacancy Request", "Form FPK", "Tanggal Request PTK", "Tanggal Approve BOD",
-            "Joined", "CV Process", "Link Form"
+            "Joined", "CV Process", "Link CV"
         ]
         id_sheet = ensure_sheet(sheet_obj, "ID Request", HEADERS_ID)
         id_sheet.append_row([
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S"), id_request_dipilih,
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            id_request_dipilih,
             data.get("nama_pelamar", ""), data.get("no_tlp", ""), data.get("email", ""),
             data.get("posisi_lamaran", ""), data.get("penempatan", ""),
             data.get("grade", ""), data.get("induk_perusahaan", ""),
@@ -186,14 +291,16 @@ def submit():
             data.get("budget_status", ""), data.get("category", ""),
             data.get("detail_category", ""), data.get("vacancy_request", ""),
             data.get("form_fpk", ""), data.get("tgl_request_ptk", ""),
-            data.get("tgl_approve_bod", ""), data.get("joined", ""),
-            data.get("cv_process", ""), data.get("link_form", ""),
+            data.get("tgl_approve_bod", ""),
+            data.get("joined", ""), data.get("cv_process", ""),
+            cv_link,
         ])
 
         return jsonify({
             "status": "success",
             "message": f"Data berhasil disimpan! ID Request: {id_request_dipilih}",
         })
+
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
@@ -208,6 +315,8 @@ def view_data():
         return render_template("data.html", headers=headers, rows=rows)
     except Exception as e:
         return render_template("data.html", headers=[], rows=[], error=str(e))
+
+# ==================== ADMIN ====================
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
@@ -254,12 +363,11 @@ def admin_dashboard():
                                        "penempatan": get_col("Penempatan")}
                 summary[id_req]["total_cv"] += 1
                 summary[id_req]["entries"].append({
-                    "nama": get_col("Nama Pelamar"),
-                    "timestamp": str(row[0]).strip(),
+                    "nama":       get_col("Nama Pelamar"),
+                    "timestamp":  str(row[0]).strip(),
                     "cv_process": get_col("CV Process"),
-                    "posisi": get_col("Posisi Lamaran"),
-                    "tgl_ptk": get_col("Tanggal Request PTK"),
-                    "tgl_bod": get_col("Tanggal Approve BOD"),
+                    "posisi":     get_col("Posisi Lamaran"),
+                    "cv_link":    get_col("Link CV"),
                 })
             except Exception:
                 continue

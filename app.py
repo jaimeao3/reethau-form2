@@ -1,26 +1,18 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import gspread
 from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
 from datetime import datetime
 from functools import wraps
 import os
 import json
-import io
+import cloudinary
+import cloudinary.uploader
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "reethau_secret_key_2024")
 app.jinja_env.filters['enumerate'] = enumerate
 
 SPREADSHEET_ID = "1M76I4Ryik_oRX81hyjI_7mpWhwUfGYq-rIscEqJ_YwI"
-
-# ============================================================
-# GANTI dengan ID folder Google Drive tempat CV disimpan
-# Cara dapat ID folder: buka folder di Google Drive,
-# lihat URL: https://drive.google.com/drive/folders/[FOLDER_ID]
-DRIVE_FOLDER_ID = os.environ.get("DRIVE_FOLDER_ID", "GANTI_FOLDER_ID_DRIVE")
-# ============================================================
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -29,6 +21,14 @@ SCOPES = [
 
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "reethau2024")
+
+# ===== CLOUDINARY CONFIG =====
+cloudinary.config(
+    cloud_name = os.environ.get("CLOUDINARY_CLOUD_NAME", "ddjob8uno"),
+    api_key    = os.environ.get("CLOUDINARY_API_KEY", "483886292127234"),
+    api_secret = os.environ.get("CLOUDINARY_API_SECRET", "UwSwhAJAiEQ5Js9Y-iha60KFrv4"),
+    secure     = True
+)
 
 def get_credentials():
     creds_json = os.environ.get("GOOGLE_CREDENTIALS")
@@ -41,10 +41,6 @@ def get_sheet():
     creds = get_credentials()
     client = gspread.authorize(creds)
     return client.open_by_key(SPREADSHEET_ID)
-
-def get_drive_service():
-    creds = get_credentials()
-    return build('drive', 'v3', credentials=creds)
 
 def ensure_sheet(sheet_obj, title, headers):
     try:
@@ -74,7 +70,6 @@ def login_required(f):
 
 @app.route("/upload-cv", methods=["POST"])
 def upload_cv():
-    """Upload CV ke Google Drive dan kembalikan link."""
     try:
         if 'cv_file' not in request.files:
             return jsonify({"status": "error", "message": "File CV tidak ditemukan"}), 400
@@ -89,57 +84,27 @@ def upload_cv():
         allowed = {'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'}
         ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
         if ext not in allowed:
-            return jsonify({"status": "error", "message": f"Tipe file tidak didukung. Gunakan: PDF, DOC, DOCX, JPG, PNG"}), 400
+            return jsonify({"status": "error", "message": "Format file tidak didukung. Gunakan: PDF, DOC, DOCX, JPG, PNG"}), 400
 
-        # Nama file di Drive: CV_NamaPelamar_Timestamp.ext
+        # Nama file di Cloudinary
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         safe_name = nama_pelamar.replace(" ", "_").replace("/", "_")
-        filename = f"CV_{safe_name}_{timestamp}.{ext}"
+        public_id = f"cv_reethau/CV_{safe_name}_{timestamp}"
 
-        # Upload ke Google Drive
-        drive_service = get_drive_service()
-
-        file_metadata = {
-            'name': filename,
-            'parents': [DRIVE_FOLDER_ID]
-        }
-
-        mime_types = {
-            'pdf': 'application/pdf',
-            'doc': 'application/msword',
-            'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'jpg': 'image/jpeg',
-            'jpeg': 'image/jpeg',
-            'png': 'image/png',
-        }
-        mime_type = mime_types.get(ext, 'application/octet-stream')
-
-        file_content = file.read()
-        media = MediaIoBaseUpload(
-            io.BytesIO(file_content),
-            mimetype=mime_type,
-            resumable=False
+        # Upload ke Cloudinary
+        result = cloudinary.uploader.upload(
+            file,
+            public_id=public_id,
+            resource_type="raw",  # untuk semua tipe file termasuk PDF, DOC
+            access_mode="public",
         )
 
-        uploaded = drive_service.files().create(
-            body=file_metadata,
-            media_body=media,
-            fields='id, name, webViewLink'
-        ).execute()
-
-        # Set permission: anyone with link can view
-        drive_service.permissions().create(
-            fileId=uploaded['id'],
-            body={'type': 'anyone', 'role': 'reader'}
-        ).execute()
-
-        link = uploaded.get('webViewLink', '')
+        link = result.get("secure_url", "")
 
         return jsonify({
             "status": "success",
             "link": link,
-            "filename": filename,
-            "file_id": uploaded['id']
+            "filename": f"CV_{safe_name}_{timestamp}.{ext}",
         })
 
     except Exception as e:
@@ -229,7 +194,7 @@ def submit():
         tahun = datetime.now().year
         tgl_request = datetime.now().strftime("%Y-%m-%d")
         id_request_dipilih = data.get("id_request", "")
-        cv_link = data.get("cv_link", "")  # Link CV dari Google Drive
+        cv_link = data.get("cv_link", "")
 
         # ---- Hasil Input ----
         HEADERS_HASIL = [
